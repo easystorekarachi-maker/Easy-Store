@@ -1,0 +1,6 @@
+{
+  "name": "Easy Store - Pakistan E-Commerce Platform",
+  "description": "Full-featured online store with 4,850+ products, fast Cash on Delivery, instant order tracking, customer support, and administrative management.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
