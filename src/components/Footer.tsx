@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import { StoreViewMode } from '../types';
 import { OwnerAvatar } from './OwnerAvatar';
+import { BrandLogo } from './BrandLogo';
 
 interface FooterProps {
   onNavigate: (view: StoreViewMode) => void;
@@ -20,10 +21,10 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenAdminGate, onO
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="space-y-2 text-center md:text-left">
             <span className="text-[11px] font-extrabold uppercase tracking-widest bg-white/20 px-3 py-1 rounded-full">
-              Mobile App Experience • پاکستان موبائل ایپ
+              Mobile App Experience • Easy Store Official App
             </span>
             <h3 className="text-2xl sm:text-3xl font-black text-white">
-              Easy Store Mobile App
+              Easy Store
             </h3>
             <p className="text-xs text-sky-100 max-w-lg leading-relaxed">
               Shop anytime, anywhere across Pakistan with exclusive app vouchers, faster Cash on Delivery checkout, and live courier tracking.
@@ -84,19 +85,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenAdminGate, onO
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
         {/* Brand Column */}
         <div className="lg:col-span-2 space-y-3">
-          <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-[#0284c7] flex items-center justify-center text-white shadow-md">
-              <ShoppingCart className="w-5 h-5 stroke-[2.3]" />
-            </div>
-            <div>
-              <span className="text-xl font-black text-[#0f3460] tracking-tight">
-                Easy <span className="text-[#0284c7]">Store</span>
-              </span>
-              <span className="text-[10px] block font-bold text-slate-400">
-                Har Cheez Asaan, Har Ghar Tak
-              </span>
-            </div>
-          </div>
+          <BrandLogo size="md" />
           <p className="text-xs text-slate-500 leading-relaxed max-w-sm">
             Pakistan&apos;s trusted online shopping destination for mobiles, laptops, electronics, cameras, fashion, home &amp; living with authentic guarantees and Cash on Delivery.
           </p>
@@ -132,7 +121,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenAdminGate, onO
           <ul className="space-y-2 text-xs">
             <li>
               <button onClick={() => onNavigate('catalog')} className="hover:text-[#0284c7] cursor-pointer">
-                All Products (4,850+)
+                All Products (40,000+)
               </button>
             </li>
             <li>
@@ -185,8 +174,14 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenAdminGate, onO
               </button>
             </li>
             <li>
-              <button onClick={onOpenAdminGate} className="hover:text-amber-600 font-bold cursor-pointer text-slate-500">
-                Admin Management Portal
+              <button 
+                onClick={() => {
+                  window.open(`${window.location.origin}${window.location.pathname}?view=admin`, '_blank');
+                }} 
+                className="hover:text-[#0284c7] font-bold cursor-pointer text-slate-500 flex items-center gap-1"
+                title="Open Admin Portal in New Tab"
+              >
+                <span>Admin Management Portal (New Tab)</span>
               </button>
             </li>
           </ul>

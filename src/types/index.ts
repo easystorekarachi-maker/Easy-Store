@@ -17,6 +17,7 @@ export interface Product {
   name: string;
   slug: string;
   category: ProductCategory;
+  subCategory?: string;
   brand?: string;
   price: number; // In Pakistani Rupees (PKR / Rs.)
   compareAtPrice?: number;
@@ -38,11 +39,12 @@ export interface Product {
 export interface CategoryInfo {
   id: ProductCategory;
   name: string;
-  urduName?: string;
+  subtitle?: string;
   description: string;
   iconName: string;
   image?: string;
   productCount: number;
+  subCategories?: string[];
 }
 
 export interface CartItem {
@@ -166,6 +168,20 @@ export interface IntegrationStatus {
     ordersCount: number;
     usersCount: number;
   };
+}
+
+export interface BannerSlide {
+  id: string;
+  title: string;
+  subtitle: string;
+  badge: string;
+  ctaText: string;
+  ctaCategory?: ProductCategory | 'all';
+  searchFilter?: string;
+  imageUrl: string;
+  discountBadge?: string;
+  active: boolean;
+  order: number;
 }
 
 export type StoreViewMode = 

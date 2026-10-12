@@ -28,7 +28,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onOpenDetail 
             alt={product.name}
             loading="lazy"
             onError={(e) => {
-              (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1526738549149-8e07eca6c147?auto=format&fit=crop&w=400&q=80';
+              (e.target as HTMLImageElement).src = `https://picsum.photos/seed/easystore_card_${product.id}/400/400`;
             }}
             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
           />

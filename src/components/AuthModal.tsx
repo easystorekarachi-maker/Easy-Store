@@ -22,17 +22,24 @@ export const AuthModal: React.FC = () => {
     register, 
     logout, 
     updateProfile,
-    unlockAdminGate
+    unlockAdminGate,
+    authModalTab
   } = useAuth();
   const { showToast } = useToast();
 
-  const [mode, setMode] = useState<'customer_login' | 'customer_register' | 'owner_login'>('customer_login');
+  const [mode, setMode] = useState<'customer_login' | 'customer_register' | 'owner_login'>(authModalTab || 'customer_login');
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [ownerPassword, setOwnerPassword] = useState('');
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  React.useEffect(() => {
+    if (authModalTab) {
+      setMode(authModalTab);
+    }
+  }, [authModalTab]);
 
   // Address editing for profile
   const [addressLine1, setAddressLine1] = useState(user?.address?.addressLine1 || '');

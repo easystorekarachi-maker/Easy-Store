@@ -24,7 +24,20 @@ import { MessageCircle } from 'lucide-react';
 function MainAppContent() {
   const { setShowAdminGateModal } = useAuth();
   const { addToCart } = useCart();
-  const [currentView, setCurrentView] = useState<StoreViewMode>('catalog');
+  const [currentView, setCurrentView] = useState<StoreViewMode>(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const v = params.get('view');
+      if (v === 'admin') return 'admin';
+      if (v === 'tracking') return 'tracking';
+      if (v === 'support') return 'support';
+      if (v === 'wishlist') return 'wishlist';
+      if (v === 'checkout') return 'checkout';
+    } catch {
+      // fallback
+    }
+    return 'catalog';
+  });
   const [selectedCategory, setSelectedCategory] = useState<ProductCategory | 'all'>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [products, setProducts] = useState<Product[]>([]);

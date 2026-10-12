@@ -93,7 +93,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 src={product.images[selectedImageIndex] || product.images[0]}
                 alt={product.name}
                 onError={(e) => {
-                  (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1526738549149-8e07eca6c147?auto=format&fit=crop&w=600&q=80';
+                  (e.target as HTMLImageElement).src = `https://picsum.photos/seed/easystore_detail_${product.id}/600/600`;
                 }}
                 className="w-full h-full object-cover"
               />

@@ -16,6 +16,8 @@ interface AuthContextType {
   lockAdminGate: () => void;
   showAuthModal: boolean;
   setShowAuthModal: (open: boolean) => void;
+  authModalTab: 'customer_login' | 'customer_register' | 'owner_login';
+  openAuthModal: (tab?: 'customer_login' | 'customer_register' | 'owner_login') => void;
   showAdminGateModal: boolean;
   setShowAdminGateModal: (open: boolean) => void;
 }
@@ -34,7 +36,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isAdminUnlocked, setIsAdminUnlocked] = useState<boolean>(false);
   const [adminLockRemainingSeconds, setAdminLockRemainingSeconds] = useState<number>(0);
   const [showAuthModal, setShowAuthModal] = useState<boolean>(false);
+  const [authModalTab, setAuthModalTab] = useState<'customer_login' | 'customer_register' | 'owner_login'>('customer_login');
   const [showAdminGateModal, setShowAdminGateModal] = useState<boolean>(false);
+
+  const openAuthModal = (tab: 'customer_login' | 'customer_register' | 'owner_login' = 'customer_login') => {
+    setAuthModalTab(tab);
+    setShowAuthModal(true);
+  };
 
   // Restore session
   useEffect(() => {
@@ -193,6 +201,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         lockAdminGate,
         showAuthModal,
         setShowAuthModal,
+        authModalTab,
+        openAuthModal,
         showAdminGateModal,
         setShowAdminGateModal,
       }}

@@ -51,7 +51,7 @@ export const AppDownloadModal: React.FC<AppDownloadModalProps> = ({
           triggerDummyApkDownload();
           showToast(
             'APK Download Complete',
-            'EasyStore_Pakistan_v5.2.apk downloaded. Tap to install on your Android device!',
+            'EasyStore.apk downloaded. Tap to install on your Android device!',
             'success'
           );
           return null;
@@ -64,10 +64,10 @@ export const AppDownloadModal: React.FC<AppDownloadModalProps> = ({
   const triggerDummyApkDownload = () => {
     // Generate a downloadable package file representation for the user
     const apkManifest = `Package: pk.easystore.app
-AppName: Easy Store Pakistan
+AppName: Easy Store
 Version: 5.2.0-release
 Platform: Android 8.0+
-Founder: Abdullah (Easy Store Pakistan)
+Founder: Abdullah (Easy Store)
 Helpline: +92 346 7792177
 Website: ${window.location.origin}
 Cash on Delivery: Supported across Pakistan
@@ -78,7 +78,7 @@ Status: Official Release Build Verified`;
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'EasyStore_Pakistan_v5.2.apk';
+    a.download = 'EasyStore.apk';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -165,14 +165,14 @@ Status: Official Release Build Verified`;
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <h4 className="font-black text-slate-900 text-sm truncate">
-                      Easy Store Pakistan: Online Shopping
+                      Easy Store
                     </h4>
                     <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
                       Official
                     </span>
                   </div>
                   <p className="text-xs text-slate-500 mt-0.5">
-                    Easy Store Pakistan (Pvt.) Ltd. • E-Commerce
+                    Easy Store (Pvt.) Ltd. • Official App
                   </p>
                   <div className="flex items-center gap-3 text-xs text-slate-600 mt-1.5">
                     <span className="flex items-center gap-1 font-bold text-amber-500">
@@ -200,7 +200,7 @@ Status: Official Release Build Verified`;
                     <path fill="#EA4335" d="M14.4 12L3.6 21.6c.3.1.6.1.9 0l9.9-9.6z"/>
                     <path fill="#34A853" d="M4.5 2.4c-.3-.1-.6-.1-.9 0L14.4 12 4.5 2.4z"/>
                   </svg>
-                  <span>Open on Google Play Store</span>
+                  <span>Open &quot;Easy Store&quot; on Google Play</span>
                   <ExternalLink className="w-4 h-4 ml-1 opacity-70" />
                 </a>
 
@@ -212,8 +212,8 @@ Status: Official Release Build Verified`;
                   <Download className="w-4 h-4" />
                   <span>
                     {isDownloading
-                      ? `Downloading APK (${downloadProgress}%)...`
-                      : 'Download APK Package Direct (v5.2.0 • 28MB)'}
+                      ? `Downloading EasyStore.apk (${downloadProgress}%)...`
+                      : 'Download EasyStore.apk Direct (v5.2.0 • 28MB)'}
                   </span>
                 </button>
               </div>
@@ -222,7 +222,7 @@ Status: Official Release Build Verified`;
               {isDownloading && (
                 <div className="space-y-1.5 p-3 rounded-xl bg-emerald-50 border border-emerald-200">
                   <div className="flex justify-between text-xs font-bold text-emerald-800">
-                    <span>Downloading EasyStore_Pakistan_v5.2.apk...</span>
+                    <span>Downloading EasyStore.apk...</span>
                     <span>{downloadProgress}%</span>
                   </div>
                   <div className="w-full bg-emerald-200 h-2 rounded-full overflow-hidden">
@@ -258,14 +258,14 @@ Status: Official Release Build Verified`;
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <h4 className="font-black text-slate-900 text-sm truncate">
-                      Easy Store Pakistan for iOS
+                      Easy Store
                     </h4>
                     <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-sky-100 text-[#0284c7]">
                       iOS 14+
                     </span>
                   </div>
                   <p className="text-xs text-slate-500 mt-0.5">
-                    Optimized for iPhone, iPad & Apple Silicon
+                    Official App • Optimized for iPhone & iPad
                   </p>
                   <p className="text-xs font-semibold text-emerald-700 mt-1">
                     Free Download • Cash on Delivery Enabled
@@ -281,7 +281,7 @@ Status: Official Release Build Verified`;
                 className="w-full py-3.5 px-4 bg-slate-900 hover:bg-black text-white font-bold rounded-2xl text-xs sm:text-sm flex items-center justify-center gap-3 shadow-lg transition-transform hover:scale-[1.01] cursor-pointer"
               >
                 <span className="text-xl">🍎</span>
-                <span>Download on Apple App Store</span>
+                <span>Open &quot;Easy Store&quot; on App Store</span>
                 <ExternalLink className="w-4 h-4 ml-1 opacity-70" />
               </a>
 

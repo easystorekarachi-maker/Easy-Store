@@ -1,5 +1,5 @@
-import { INITIAL_COUPONS, INITIAL_PRODUCTS } from '../data/seedData';
-import { Complaint, Coupon, Order, OrderStatus, Product, User } from '../types';
+import { INITIAL_BANNERS, INITIAL_COUPONS, INITIAL_PRODUCTS } from '../data/seedData';
+import { BannerSlide, Complaint, Coupon, Order, OrderStatus, Product, User } from '../types';
 
 const STORAGE_KEYS = {
   PRODUCTS: 'easystore_pk_products_v5',
@@ -8,6 +8,7 @@ const STORAGE_KEYS = {
   COUPONS: 'easystore_pk_coupons_v5',
   COMPLAINTS: 'easystore_pk_complaints_v5',
   ADMIN_SETTINGS: 'easystore_pk_admin_settings_v5',
+  BANNERS: 'easystore_pk_banners_v6',
 };
 
 // Official Store Owner Passphrase
@@ -405,6 +406,76 @@ class DatabaseService {
       message: `Coupon applied: ${coupon.description}`,
       coupon,
     };
+  }
+
+  // ================== BANNERS ==================
+  public getBanners(): BannerSlide[] {
+    try {
+      const data = localStorage.getItem(STORAGE_KEYS.BANNERS);
+      if (data) {
+        const parsed = JSON.parse(data);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed.sort((a: BannerSlide, b: BannerSlide) => a.order - b.order);
+        }
+      }
+      return INITIAL_BANNERS;
+    } catch {
+      return INITIAL_BANNERS;
+    }
+  }
+
+  public saveBanner(banner: BannerSlide): BannerSlide {
+    const banners = this.getBanners();
+    const index = banners.findIndex((b) => b.id === banner.id);
+    if (index >= 0) {
+      banners[index] = banner;
+    } else {
+      banners.push(banner);
+    }
+    banners.sort((a, b) => a.order - b.order);
+    localStorage.setItem(STORAGE_KEYS.BANNERS, JSON.stringify(banners));
+    return banner;
+  }
+
+  public updateBanner(id: string, updates: Partial<BannerSlide>): BannerSlide | null {
+    const banners = this.getBanners();
+    const index = banners.findIndex((b) => b.id === id);
+    if (index === -1) return null;
+    banners[index] = { ...banners[index], ...updates };
+    banners.sort((a, b) => a.order - b.order);
+    localStorage.setItem(STORAGE_KEYS.BANNERS, JSON.stringify(banners));
+    return banners[index];
+  }
+
+  public deleteBanner(id: string): boolean {
+    const banners = this.getBanners().filter((b) => b.id !== id);
+    localStorage.setItem(STORAGE_KEYS.BANNERS, JSON.stringify(banners));
+    return true;
+  }
+
+  public reorderBanners(orderedIds: string[]): BannerSlide[] {
+    const banners = this.getBanners();
+    const idMap = new Map(banners.map((b) => [b.id, b]));
+    const reordered: BannerSlide[] = [];
+    orderedIds.forEach((id, idx) => {
+      const banner = idMap.get(id);
+      if (banner) {
+        banner.order = idx + 1;
+        reordered.push(banner);
+        idMap.delete(id);
+      }
+    });
+    idMap.forEach((banner) => {
+      banner.order = reordered.length + 1;
+      reordered.push(banner);
+    });
+    localStorage.setItem(STORAGE_KEYS.BANNERS, JSON.stringify(reordered));
+    return reordered;
+  }
+
+  public resetDefaultBanners(): BannerSlide[] {
+    localStorage.setItem(STORAGE_KEYS.BANNERS, JSON.stringify(INITIAL_BANNERS));
+    return INITIAL_BANNERS;
   }
 
   // ================== USERS & AUTH ==================

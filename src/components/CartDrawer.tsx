@@ -114,7 +114,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigate }) => {
                 </div>
                 <h3 className="text-base font-bold text-slate-800 mb-1">Your cart is empty</h3>
                 <p className="text-xs text-slate-500 max-w-xs mb-5">
-                  Browse over 4,850+ mobiles, electronics, fashion, and home products with Cash on Delivery.
+                  Browse over 40,000+ mobiles, electronics, fashion, and home products with Cash on Delivery.
                 </p>
                 <button
                   onClick={() => {

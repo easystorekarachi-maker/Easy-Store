@@ -11,6 +11,7 @@ import {
   Package, 
   LogOut, 
   LogIn, 
+  UserPlus,
   ChevronDown,
   PhoneCall,
   Truck,
@@ -21,6 +22,7 @@ import { useAuth } from '../context/AuthContext';
 import { CATEGORIES } from '../data/seedData';
 import { ProductCategory, Product, StoreViewMode } from '../types';
 import { OwnerAvatar } from './OwnerAvatar';
+import { BrandLogo } from './BrandLogo';
 
 interface NavbarProps {
   currentView: StoreViewMode;
@@ -46,7 +48,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenAppDownload,
 }) => {
   const { itemCount, setIsCartOpen, wishlist } = useCart();
-  const { user, isAuthenticated, isAdminUnlocked, logout, setShowAuthModal, setShowAdminGateModal } = useAuth();
+  const { user, isAuthenticated, isAdminUnlocked, logout, setShowAuthModal, openAuthModal, setShowAdminGateModal } = useAuth();
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
@@ -74,11 +76,12 @@ export const Navbar: React.FC<NavbarProps> = ({
         .slice(0, 6)
     : [];
 
-  const handleAdminClick = () => {
-    if (isAdminUnlocked) {
+  const handleAdminClick = (e?: React.MouseEvent) => {
+    if (e) e.preventDefault();
+    const adminUrl = `${window.location.origin}${window.location.pathname}?view=admin`;
+    const newWindow = window.open(adminUrl, '_blank');
+    if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
       onNavigate('admin');
-    } else {
-      setShowAdminGateModal(true);
     }
   };
 
@@ -143,31 +146,6 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               <span>Track Order</span>
             </button>
-            <span className="opacity-40 hidden sm:inline">|</span>
-            {isAuthenticated ? (
-              <button
-                onClick={() => setShowAuthModal(true)}
-                className="hover:underline flex items-center gap-1 font-bold text-cyan-200 cursor-pointer"
-              >
-                <span>Hi, {user?.name?.split(' ')[0]}</span>
-              </button>
-            ) : (
-              <div className="flex items-center gap-1.5">
-                <button
-                  onClick={() => setShowAuthModal(true)}
-                  className="hover:text-cyan-200 font-bold transition-colors cursor-pointer text-[10px] sm:text-[11px] bg-white/10 hover:bg-white/20 px-2 py-0.5 rounded"
-                >
-                  Login
-                </button>
-                <button
-                  onClick={() => setShowAuthModal(true)}
-                  className="hover:text-cyan-200 font-bold transition-colors cursor-pointer text-[11px] hidden md:inline"
-                >
-                  Sign Up
-                </button>
-              </div>
-            )}
-            <span className="opacity-40 hidden lg:inline">|</span>
             <div className="hidden lg:flex items-center gap-1.5 font-semibold text-emerald-300">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
               <span>Trusted Nationwide</span>
@@ -179,28 +157,16 @@ export const Navbar: React.FC<NavbarProps> = ({
       {/* 2. Main Brand & Search Header */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5">
         <div className="flex items-center justify-between gap-4 sm:gap-8">
-          {/* Logo with Shopping Cart & Tagline: "Har Cheez Asaan, Har Ghar Tak" */}
+          {/* Brand Logo with Link to Home */}
           <div className="flex items-center gap-3">
             <button
               onClick={() => {
                 onNavigate('catalog');
                 onSelectCategory('all');
               }}
-              className="flex items-center gap-3 text-left group cursor-pointer focus:outline-none"
+              className="group cursor-pointer focus:outline-none"
             >
-              <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-[#0284c7] to-[#0369a1] flex items-center justify-center text-white shadow-md shadow-sky-500/30 group-hover:scale-105 transition-transform">
-                <ShoppingCart className="w-6 h-6 stroke-[2.3]" />
-              </div>
-              <div>
-                <div className="flex items-center gap-1 leading-none">
-                  <span className="text-2xl font-black tracking-tight text-[#0f3460]">
-                    Easy <span className="text-[#0284c7]">Store</span>
-                  </span>
-                </div>
-                <span className="text-[11px] block font-semibold text-slate-500 tracking-tight mt-0.5">
-                  Har Cheez Asaan, Har Ghar Tak
-                </span>
-              </div>
+              <BrandLogo size="md" />
             </button>
           </div>
 
@@ -242,7 +208,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-slate-200 rounded-2xl shadow-2xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-2">
                 <div className="p-2.5 bg-slate-50 border-b border-slate-100 text-xs font-semibold text-slate-500 flex justify-between items-center">
                   <span>Product Suggestions ({searchSuggestions.length})</span>
-                  <span className="text-[11px] text-slate-400">4,850+ Products Catalog</span>
+                  <span className="text-[11px] text-slate-400">40,000+ Products Catalog</span>
                 </div>
                 {searchSuggestions.length === 0 ? (
                   <div className="p-4 text-center text-xs text-slate-500">
@@ -288,103 +254,93 @@ export const Navbar: React.FC<NavbarProps> = ({
             )}
           </div>
 
-          {/* Icons: Account, Wishlist, Cart */}
-          <div className="flex items-center gap-3 sm:gap-5">
-            {/* Account Icon */}
-            <div className="relative">
-              <button
-                onClick={() => {
-                  if (!isAuthenticated) {
-                    setShowAuthModal(true);
-                  } else {
-                    setUserDropdownOpen(!userDropdownOpen);
-                  }
-                }}
-                className="flex flex-col items-center text-slate-700 hover:text-[#0284c7] cursor-pointer transition-colors p-1"
-              >
-                <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 hover:bg-sky-50">
-                  <UserIcon className="w-4 h-4" />
-                </div>
-                <span className="text-[11px] font-semibold mt-0.5">
-                  {isAuthenticated ? (user?.name?.split(' ')[0] || 'Account') : 'Login'}
-                </span>
-              </button>
-
-              {userDropdownOpen && (
-                <div 
-                  className="absolute right-0 mt-2 w-56 bg-white border border-slate-200 rounded-2xl shadow-xl py-2 z-50 text-xs animate-in fade-in"
-                  onMouseLeave={() => setUserDropdownOpen(false)}
+          {/* Icons & Account: Login / Sign Up, Wishlist, Cart */}
+          <div className="flex items-center gap-2 sm:gap-4">
+            {/* Account Controls: Login & Sign Up (When logged out) or Profile Menu (When logged in) */}
+            {isAuthenticated ? (
+              <div className="relative">
+                <button
+                  onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-sky-50 text-slate-700 hover:text-[#0284c7] cursor-pointer transition-colors"
                 >
-                  {isAuthenticated ? (
-                    <>
-                      <div className="px-4 py-2.5 border-b border-slate-100">
-                        <p className="font-bold text-slate-800">{user?.name}</p>
-                        <p className="text-[11px] text-slate-500 truncate">{user?.email}</p>
-                        <span className="inline-block mt-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
-                          {user?.role === 'admin' ? 'Store Manager' : 'Verified Pakistan Customer'}
-                        </span>
-                      </div>
-                      <button
-                        onClick={() => {
-                          onNavigate('order_history');
-                          setUserDropdownOpen(false);
-                        }}
-                        className="w-full text-left px-4 py-2 hover:bg-slate-50 text-slate-700 flex items-center gap-2 cursor-pointer"
-                      >
-                        <Package className="w-4 h-4 text-slate-400" />
-                        My Orders
-                      </button>
-                      <button
-                        onClick={() => {
-                          onNavigate('tracking');
-                          setUserDropdownOpen(false);
-                        }}
-                        className="w-full text-left px-4 py-2 hover:bg-slate-50 text-slate-700 flex items-center gap-2 cursor-pointer"
-                      >
-                        <Truck className="w-4 h-4 text-slate-400" />
-                        Track Order Status
-                      </button>
-                      <button
-                        onClick={() => {
-                          logout();
-                          setUserDropdownOpen(false);
-                        }}
-                        className="w-full text-left px-4 py-2 hover:bg-rose-50 text-rose-600 flex items-center gap-2 cursor-pointer border-t border-slate-100"
-                      >
-                        <LogOut className="w-4 h-4" />
-                        Logout
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <div className="px-4 py-2.5 text-[11px] text-slate-500 border-b border-slate-100">
-                        Sign in to track orders, saved addresses and faster checkout.
-                      </div>
-                      <button
-                        onClick={() => {
-                          setShowAuthModal(true);
-                          setUserDropdownOpen(false);
-                        }}
-                        className="w-full text-left px-4 py-2.5 hover:bg-sky-50 text-[#0284c7] font-bold flex items-center gap-2 cursor-pointer"
-                      >
-                        <LogIn className="w-4 h-4" />
-                        Sign In / Register
-                      </button>
-                      <button
-                        onClick={() => {
-                          onNavigate('tracking');
-                          setUserDropdownOpen(false);
-                        }}
-                        className="w-full text-left px-4 py-2 hover:bg-slate-50 text-slate-700 flex items-center gap-2 cursor-pointer"
-                      >
-                        <Truck className="w-4 h-4 text-slate-400" />
-                        Track with Order ID
-                      </button>
-                    </>
-                  )}
-                </div>
-              )}
-            </div>
+                  <div className="w-7 h-7 rounded-full bg-[#0284c7] text-white flex items-center justify-center font-bold text-xs">
+                    {user?.name?.charAt(0).toUpperCase()}
+                  </div>
+                  <div className="text-left hidden sm:block leading-none">
+                    <span className="text-[10px] text-slate-400 block font-medium">Hello,</span>
+                    <span className="text-xs font-bold text-slate-800 truncate max-w-[80px]">
+                      {user?.name?.split(' ')[0]}
+                    </span>
+                  </div>
+                  <ChevronDown className="w-3.5 h-3.5 text-slate-400 hidden sm:block" />
+                </button>
+
+                {userDropdownOpen && (
+                  <div 
+                    className="absolute right-0 mt-2 w-56 bg-white border border-slate-200 rounded-2xl shadow-xl py-2 z-50 text-xs animate-in fade-in"
+                    onMouseLeave={() => setUserDropdownOpen(false)}
+                  >
+                    <div className="px-4 py-2.5 border-b border-slate-100">
+                      <p className="font-bold text-slate-800">{user?.name}</p>
+                      <p className="text-[11px] text-slate-500 truncate">{user?.email}</p>
+                      <span className="inline-block mt-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                        {user?.role === 'admin' ? 'Store Manager' : 'Verified Pakistan Customer'}
+                      </span>
+                    </div>
+                    <button
+                      onClick={() => {
+                        onNavigate('order_history');
+                        setUserDropdownOpen(false);
+                      }}
+                      className="w-full text-left px-4 py-2 hover:bg-slate-50 text-slate-700 flex items-center gap-2 cursor-pointer"
+                    >
+                      <Package className="w-4 h-4 text-slate-400" />
+                      My Orders
+                    </button>
+                    <button
+                      onClick={() => {
+                        onNavigate('tracking');
+                        setUserDropdownOpen(false);
+                      }}
+                      className="w-full text-left px-4 py-2 hover:bg-slate-50 text-slate-700 flex items-center gap-2 cursor-pointer"
+                    >
+                      <Truck className="w-4 h-4 text-slate-400" />
+                      Track Order Status
+                    </button>
+                    <button
+                      onClick={() => {
+                        logout();
+                        setUserDropdownOpen(false);
+                      }}
+                      className="w-full text-left px-4 py-2 hover:bg-rose-50 text-rose-600 flex items-center gap-2 cursor-pointer border-t border-slate-100"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              /* DUAL LOGIN & SIGN UP BUTTONS IN SECOND HEADER */
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                <button
+                  onClick={() => openAuthModal('customer_login')}
+                  className="px-3 sm:px-4 py-2 bg-slate-100 hover:bg-sky-50 text-slate-800 hover:text-[#0284c7] font-extrabold rounded-xl text-xs sm:text-sm flex items-center gap-1.5 transition-all cursor-pointer border border-slate-300 shadow-2xs hover:border-[#0284c7]/40"
+                  title="Customer Login"
+                >
+                  <LogIn className="w-4 h-4 text-[#0284c7]" />
+                  <span>Login</span>
+                </button>
+                <button
+                  onClick={() => openAuthModal('customer_register')}
+                  className="px-3 sm:px-4 py-2 bg-[#0284c7] hover:bg-[#0369a1] text-white font-extrabold rounded-xl text-xs sm:text-sm flex items-center gap-1.5 transition-all shadow-md shadow-sky-500/25 cursor-pointer hover:scale-[1.02] active:scale-98"
+                  title="Create New Account"
+                >
+                  <UserPlus className="w-4 h-4 text-white" />
+                  <span>Sign Up</span>
+                </button>
+              </div>
+            )}
 
             {/* Wishlist Icon */}
             <button
@@ -600,7 +556,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           <div className="hidden lg:flex items-center gap-2 text-slate-500 font-semibold text-[11px]">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span>4,850+ Products Ready to Dispatch</span>
+            <span>40,000+ Products Ready to Dispatch</span>
           </div>
         </div>
       </div>
